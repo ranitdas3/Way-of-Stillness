@@ -5,16 +5,24 @@ export default function App() {
   return (
     <div style={{
       background: 'radial-gradient(circle, rgba(0, 121, 244, 0.2) 0%, rgba(223, 207, 182, 0.2) 100%), linear-gradient(to bottom, #0060fa 0%, #beadcb 100%)',
-      minHeight: '100vh'
+      height: '100vh',
+      width: '100vw',
+      overflowY: 'scroll',
+      scrollSnapType: 'y mandatory',
+      margin: 0,
+      padding: 0
     }}>
 
       <section style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        minHeight: '100vh',
+        height: '100vh',
+        width: '100vw',
         padding: '4rem',
         alignItems: 'center',
-        gap: '4rem'
+        gap: '4rem',
+        scrollSnapAlign: 'start',
+        boxSizing: 'border-box'
       }}>
         <div style={{ color: '#dcc8aa', fontFamily: 'Georgia, serif' }}>
           <p style={{ fontSize: '0.75rem', letterSpacing: '0.2em', opacity: 0.5, marginBottom: '2rem' }}>01</p>
@@ -34,10 +42,13 @@ export default function App() {
       <section style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        minHeight: '100vh',
+        height: '100vh',
+        width: '100vw',
         padding: '4rem',
         alignItems: 'center',
-        gap: '4rem'
+        gap: '4rem',
+        scrollSnapAlign: 'start',
+        boxSizing: 'border-box'
       }}>
         <div style={{ color: '#dcc8aa', fontFamily: 'Georgia, serif' }}>
           <p style={{ fontSize: '0.75rem', letterSpacing: '0.2em', opacity: 0.5, marginBottom: '2rem' }}>02</p>
