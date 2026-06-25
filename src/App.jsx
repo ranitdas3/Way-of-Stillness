@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import Spanda from './chapters/01-spanda/index.jsx'
-import Delta from './chapters/02-delta/index.jsx'
+import Spanda from './chapters/01-Spanda/index.jsx'
+import Delta from './chapters/02-Delta/index.jsx'
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -80,12 +80,35 @@ export default function App() {
       e.preventDefault()
     }
 
+    const handleKeyDown = (e) => {
+      if (isAnimating.current) return
+
+      if (e.key === 'ArrowDown') {
+        if (activeIndex < totalSections - 1) {
+          isAnimating.current = true
+          setActiveIndex((prev) => prev + 1)
+          setTimeout(() => {
+            isAnimating.current = false
+          }, 1400)
+        }
+      } else if (e.key === 'ArrowUp') {
+        if (activeIndex > 0) {
+          isAnimating.current = true
+          setActiveIndex((prev) => prev - 1)
+          setTimeout(() => {
+            isAnimating.current = false
+          }, 1400)
+        }
+      }
+    }
+
     const container = document.getElementById('app-container')
     if (container) {
       container.addEventListener('wheel', handleWheel, { passive: false })
       container.addEventListener('touchstart', handleTouchStart, { passive: true })
       container.addEventListener('touchmove', handleTouchMove, { passive: false })
     }
+    window.addEventListener('keydown', handleKeyDown)
 
     return () => {
       if (container) {
@@ -93,6 +116,7 @@ export default function App() {
         container.removeEventListener('touchstart', handleTouchStart)
         container.removeEventListener('touchmove', handleTouchMove)
       }
+      window.removeEventListener('keydown', handleKeyDown)
     }
   }, [activeIndex])
 
@@ -140,11 +164,8 @@ export default function App() {
           justify-self: end; /* pushes the visual block to the right */
         }
 
-        /* Stage 3: Text block starts at opacity 0, translateY 20px */
+        /* Stage 3: Text block container layout */
         .reveal-content {
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 1000ms ease 700ms, transform 1000ms cubic-bezier(0.25, 1, 0.5, 1) 700ms;
           display: flex;
           flex-direction: column;
           align-items: flex-start;
@@ -158,12 +179,31 @@ export default function App() {
           transform: translateY(0);
         }
 
-        .slow-tide-section.is-visible .reveal-content {
-          opacity: 1;
-          transform: translateY(0);
+        /* Typography Styles & Animations */
+        .chapter-number, .chapter-heading, .chapter-paragraph {
+          opacity: 0;
+          transform: translateY(20px);
+          transition: opacity 1000ms ease, transform 1000ms cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Typography Styles */
+        .slow-tide-section.is-visible .chapter-number {
+          opacity: 1;
+          transform: translateY(0);
+          transition-delay: 500ms;
+        }
+
+        .slow-tide-section.is-visible .chapter-heading {
+          opacity: 1;
+          transform: translateY(0);
+          transition-delay: 900ms;
+        }
+
+        .slow-tide-section.is-visible .chapter-paragraph {
+          opacity: 1;
+          transform: translateY(0);
+          transition-delay: 1300ms;
+        }
+
         .chapter-number {
           font-family: 'Major Mono Display', monospace;
           font-size: 36px;
