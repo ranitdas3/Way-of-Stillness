@@ -211,7 +211,7 @@ export default function App() {
           letter-spacing: -0.18em;
           line-height: 1;
           margin: 0 0 1.5rem 0;
-          color: rgba(255, 255, 255, 0.8);
+          color: rgba(255, 255, 255, 0.4);
         }
 
         .chapter-heading {
@@ -222,16 +222,16 @@ export default function App() {
           letter-spacing: -0.02em;
           line-height: 1.1;
           margin: 0 0 2rem 0;
-          color: rgba(255, 255, 255, 0.8);
+          color: rgba(255, 255, 255, 0.9);
         }
 
         .chapter-paragraph {
           font-family: 'Hedvig Letters Sans', sans-serif;
           font-size: 16px;
-          line-height: 120%;
+          line-height: 1.4;
           letter-spacing: 0;
           margin: 0;
-          color: rgba(255, 255, 255, 0.8);
+          color: rgba(255, 255, 255, 0.6);
         }
 
         /* Responsive Mobile Layout (< 768px) */
