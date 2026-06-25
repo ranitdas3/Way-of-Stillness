@@ -9,6 +9,8 @@ export default function App() {
       width: '100vw',
       overflowY: 'scroll',
       scrollSnapType: 'y mandatory',
+      scrollPadding: '10vh',
+      scrollBehavior: 'smooth',
       margin: 0,
       padding: 0
     }}>
@@ -22,7 +24,8 @@ export default function App() {
         alignItems: 'center',
         gap: '4rem',
         scrollSnapAlign: 'start',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        marginBottom: '10vh'
       }}>
         <div style={{ color: '#dcc8aa', fontFamily: 'Georgia, serif' }}>
           <p style={{ fontSize: '0.75rem', letterSpacing: '0.2em', opacity: 0.5, marginBottom: '2rem' }}>01</p>
@@ -48,7 +51,8 @@ export default function App() {
         alignItems: 'center',
         gap: '4rem',
         scrollSnapAlign: 'start',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        marginBottom: '10vh'
       }}>
         <div style={{ color: '#dcc8aa', fontFamily: 'Georgia, serif' }}>
           <p style={{ fontSize: '0.75rem', letterSpacing: '0.2em', opacity: 0.5, marginBottom: '2rem' }}>02</p>
