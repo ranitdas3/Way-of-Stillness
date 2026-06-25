@@ -100,7 +100,7 @@ export default function App() {
     <div
       id="app-container"
       style={{
-        background: 'radial-gradient(circle, rgba(0, 121, 244, 0.2) 0%, rgba(223, 207, 182, 0.2) 100%), linear-gradient(to bottom, #0060fa 0%, #beadcb 100%)',
+        background: 'black',
         height: '100vh',
         width: '100vw',
         overflow: 'hidden',
