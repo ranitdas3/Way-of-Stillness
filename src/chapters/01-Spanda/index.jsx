@@ -30,7 +30,7 @@ export default function Spanda() {
         }))
 
         const draw = () => {
-            ctx.fillStyle = '#0a0a0a'
+            ctx.fillStyle = 'black'
             ctx.fillRect(0, 0, W, H)
 
             const dist = Math.hypot(mouse.x - cx, mouse.y - cy)
@@ -42,7 +42,7 @@ export default function Spanda() {
 
                 ctx.beginPath()
                 ctx.arc(cx, cy, ring.r, 0, Math.PI * 2)
-                ctx.strokeStyle = `rgba(220, 200, 170, ${ring.opacity * (1 - ring.r / 260)})`
+                ctx.strokeStyle = `rgba(255, 255, 255, ${ring.opacity * (1 - ring.r / 260)})`
                 ctx.lineWidth = 1
                 ctx.stroke()
             })
@@ -50,7 +50,7 @@ export default function Spanda() {
             // center dot
             ctx.beginPath()
             ctx.arc(cx, cy, 2, 0, Math.PI * 2)
-            ctx.fillStyle = 'rgba(220, 200, 170, 0.9)'
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'
             ctx.fill()
 
             raf = requestAnimationFrame(draw)
@@ -63,7 +63,7 @@ export default function Spanda() {
     return (
         <canvas
             ref={canvasRef}
-            style={{ display: 'block', borderRadius: '4px' }}
+            style={{ display: 'block', borderRadius: '4px', background: 'black' }}
         />
     )
 }
