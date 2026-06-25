@@ -33,7 +33,7 @@ export default function Delta() {
             ctx.beginPath()
             ctx.moveTo(x, y)
             ctx.lineTo(ex, ey)
-            ctx.strokeStyle = `rgba(180, 155, 110, ${opacity})`
+            ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`
             ctx.lineWidth = weight
             ctx.stroke()
 
