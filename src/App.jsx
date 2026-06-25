@@ -11,7 +11,6 @@ export default function App() {
   const totalSections = 2
 
   useEffect(() => {
-    // Hide active elements immediately on transition start, then reveal after 1400ms
     if (activeIndex !== visibleIndex) {
       setVisibleIndex(-1)
     }
@@ -29,7 +28,6 @@ export default function App() {
       if (isAnimating.current) return
 
       if (e.deltaY > 10) {
-        // scroll down
         if (activeIndex < totalSections - 1) {
           isAnimating.current = true
           setActiveIndex((prev) => prev + 1)
@@ -38,7 +36,6 @@ export default function App() {
           }, 1400)
         }
       } else if (e.deltaY < -10) {
-        // scroll up
         if (activeIndex > 0) {
           isAnimating.current = true
           setActiveIndex((prev) => prev - 1)
@@ -62,7 +59,6 @@ export default function App() {
       const diffY = touchStartY.current - e.touches[0].clientY
       if (Math.abs(diffY) > 50) {
         if (diffY > 0) {
-          // Swipe up -> scroll down
           if (activeIndex < totalSections - 1) {
             isAnimating.current = true
             setActiveIndex((prev) => prev + 1)
@@ -71,7 +67,6 @@ export default function App() {
             }, 1400)
           }
         } else {
-          // Swipe down -> scroll up
           if (activeIndex > 0) {
             isAnimating.current = true
             setActiveIndex((prev) => prev - 1)
@@ -136,6 +131,13 @@ export default function App() {
           opacity: 0;
           transform: translateY(30px);
           transition: opacity 1000ms ease 0ms, transform 1200ms cubic-bezier(0.25, 1, 0.5, 1) 400ms;
+          width: 85% !important;
+          height: auto !important;
+          aspect-ratio: 0.85 / 1.20 !important;
+          max-height: 75vh;
+          display: block;
+          border-radius: 4px;
+          justify-self: end; /* pushes the visual block to the right */
         }
 
         /* Stage 3: Text block starts at opacity 0, translateY 20px */
@@ -143,6 +145,11 @@ export default function App() {
           opacity: 0;
           transform: translateY(20px);
           transition: opacity 1000ms ease 700ms, transform 1000ms cubic-bezier(0.25, 1, 0.5, 1) 700ms;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          text-align: left;
+          padding-left: 9rem; /* pushes the text block further to the right */
         }
 
         /* Visible states triggered by .is-visible class */
@@ -155,6 +162,51 @@ export default function App() {
           opacity: 1;
           transform: translateY(0);
         }
+
+        /* Typography Styles */
+        .chapter-number {
+          font-family: 'Major Mono Display', monospace;
+          font-size: 36px;
+          text-transform: uppercase;
+          letter-spacing: -0.18em;
+          line-height: 1;
+          margin: 0 0 1.5rem 0;
+          color: rgba(255, 255, 255, 0.8);
+        }
+
+        .chapter-heading {
+          font-family: 'Hedvig Letters Sans', sans-serif;
+          font-weight: 400;
+          font-size: 64px;
+          text-transform: uppercase;
+          letter-spacing: -0.02em;
+          line-height: 1.1;
+          margin: 0 0 2rem 0;
+          color: rgba(255, 255, 255, 0.8);
+        }
+
+        .chapter-paragraph {
+          font-family: 'Hedvig Letters Sans', sans-serif;
+          font-size: 16px;
+          line-height: 120%;
+          letter-spacing: 0;
+          margin: 0;
+          color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Responsive Mobile Layout (< 768px) */
+        @media (max-width: 767px) {
+          .slow-tide-section {
+            grid-template-columns: 1fr;
+            padding: 2rem;
+            gap: 2rem;
+            align-content: center;
+          }
+
+          .chapter-heading {
+            font-size: 48px;
+          }
+        }
       `}</style>
 
       {/* Section 01 - Spanda */}
@@ -165,22 +217,19 @@ export default function App() {
           zIndex: 1
         }}
       >
-        <div
-          className="reveal-content"
-          style={{ color: '#dcc8aa', fontFamily: 'Georgia, serif' }}
-        >
-          <p style={{ fontSize: '0.75rem', letterSpacing: '0.2em', opacity: 0.5, marginBottom: '2rem' }}>01</p>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 400, lineHeight: 1.4, marginBottom: '1.5rem' }}>
-            স্পন্দ — Spanda
+        <Spanda />
+        <div className="reveal-content">
+          <p className="chapter-number">01</p>
+          <h2 className="chapter-heading">
+            Spanda
           </h2>
-          <p style={{ fontSize: '1rem', lineHeight: 1.8, opacity: 0.75 }}>
+          <p className="chapter-paragraph">
             Before the first form, there was a tremor.<br />
             Not sound. Not light.<br />
             The universe did not begin with a bang —<br />
             it began with a shiver.
           </p>
         </div>
-        <Spanda />
       </section>
 
       {/* Section 02 - Delta */}
@@ -191,22 +240,19 @@ export default function App() {
           zIndex: 2
         }}
       >
-        <div
-          className="reveal-content"
-          style={{ color: '#dcc8aa', fontFamily: 'Georgia, serif' }}
-        >
-          <p style={{ fontSize: '0.75rem', letterSpacing: '0.2em', opacity: 0.5, marginBottom: '2rem' }}>02</p>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 400, lineHeight: 1.4, marginBottom: '1.5rem' }}>
-            ব-দ্বীপ — Delta
+        <Delta />
+        <div className="reveal-content">
+          <p className="chapter-number">02</p>
+          <h2 className="chapter-heading">
+            Delta
           </h2>
-          <p style={{ fontSize: '1rem', lineHeight: 1.8, opacity: 0.75 }}>
+          <p className="chapter-paragraph">
             The river does not choose to split.<br />
             It simply finds what the land allows.<br />
             Every branch believes it is the main current.<br />
             None of them are wrong.
           </p>
         </div>
-        <Delta />
       </section>
 
     </div>
