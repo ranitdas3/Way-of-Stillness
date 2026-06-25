@@ -134,6 +134,12 @@ export default function App() {
       }}
     >
       <style>{`
+        html, body {
+          margin: 0;
+          padding: 0;
+          background: black;
+        }
+
         .slow-tide-section {
           position: absolute;
           top: 0;
