@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Spanda from './chapters/01-Spanda/index.jsx'
 import Delta from './chapters/02-Delta/index.jsx'
+import Bishad from './chapters/03-Bishad/index.jsx'
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -8,7 +9,7 @@ export default function App() {
   const isAnimating = useRef(false)
   const touchStartY = useRef(0)
 
-  const totalSections = 2
+  const totalSections = 3
 
   useEffect(() => {
     if (activeIndex !== visibleIndex) {
@@ -297,6 +298,29 @@ export default function App() {
             It simply finds what the land allows.<br />
             Every branch believes it is the main current.<br />
             None of them are wrong.
+          </p>
+        </div>
+      </section>
+
+      {/* Section 03 - Bishad */}
+      <section
+        className={`slow-tide-section ${visibleIndex === 2 ? 'is-visible' : ''}`}
+        style={{
+          transform: activeIndex >= 2 ? 'translateY(0)' : 'translateY(100vh)',
+          zIndex: 3
+        }}
+      >
+        <Bishad />
+        <div className="reveal-content">
+          <p className="chapter-number">03</p>
+          <h2 className="chapter-heading">
+            Bishad
+          </h2>
+          <p className="chapter-paragraph">
+            A scattered field, suspended in the descent.<br />
+            Falling without beginning, landing without end.<br />
+            To seek the bottom is to find the top —<br />
+            grief is not a weight, but an endless path.
           </p>
         </div>
       </section>
