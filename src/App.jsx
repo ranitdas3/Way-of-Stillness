@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import Spanda from './chapters/01-Spanda/index.jsx'
 import Delta from './chapters/02-Delta/index.jsx'
 import Bishad from './chapters/03-Bishad/index.jsx'
+import Adda from './chapters/04-Adda/index.jsx'
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -9,7 +10,7 @@ export default function App() {
   const isAnimating = useRef(false)
   const touchStartY = useRef(0)
 
-  const totalSections = 3
+  const totalSections = 4
 
   useEffect(() => {
     if (activeIndex !== visibleIndex) {
@@ -321,6 +322,29 @@ export default function App() {
             Falling without beginning, landing without end.<br />
             To seek the bottom is to find the top —<br />
             grief is not a weight, but an endless path.
+          </p>
+        </div>
+      </section>
+
+      {/* Section 04 - Adda */}
+      <section
+        className={`slow-tide-section ${visibleIndex === 3 ? 'is-visible' : ''}`}
+        style={{
+          transform: activeIndex >= 3 ? 'translateY(0)' : 'translateY(100vh)',
+          zIndex: 4
+        }}
+      >
+        <Adda />
+        <div className="reveal-content">
+          <p className="chapter-number">04</p>
+          <h2 className="chapter-heading">
+            Adda
+          </h2>
+          <p className="chapter-paragraph">
+            A gathering of points, drawn by an invisible thread.<br />
+            Holding briefly, only to remember the distance.<br />
+            We meet not to stay, but to drift —<br />
+            every connection is a temporary home.
           </p>
         </div>
       </section>
