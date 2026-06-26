@@ -1,28 +1,23 @@
 import { useEffect, useRef } from 'react'
 
 // CONCEPT: Sthiratā (স্থিরতা) — Steadiness
-// MOTION ARCHETYPE: perpetual inward pull — gravitational, inevitable, unending
-// GEOMETRY: radial convergence — all edges toward center
-// ORIGIN: all four edges, full perimeter
+// MOTION ARCHETYPE: slow eternal rotation — spiral arms sweeping around a silent axis
+// GEOMETRY: spiral — two or three arms rotating around a fixed center
+// ORIGIN: canvas center, arms extending outward
 //
 // WHAT IT DOES:
-// Particles emerge continuously from all edges of the canvas — top, bottom, left, right,
-// and every corner — and drift steadily inward toward the center. Not fast, not urgent.
-// Inevitable. The movement is smooth and directional, each particle following a slightly
-// curved path toward the central point, as if being pulled by quiet gravity. Near the center,
-// particles don't collide or accumulate — they simply fade out as they arrive, dissolving
-// at the threshold. The center itself is empty. What approaches it disappears. New particles
-// are always emerging from the edges. The pull never stops, never speeds up, never slows down.
-// It has always been this way. The steadiness is not stillness — it is endless, unhurried
-// motion toward the same point, forever.
-//
-// The overall density is moderate — enough particles to feel the pull as a field, not as
-// individuals. The perimeter is always slightly busier than the center.
+// Two or three spiral arms extend outward from the center, each populated with particles —
+// denser near the core, thinning toward the tips. The entire structure rotates slowly around the
+// central axis, one full revolution every 14–18 seconds. Particles don't move individually —
+// the arms themselves turn, as one body, like the galaxy does. Near the center, particles are
+// brighter and more concentrated, forming a soft glowing core. Toward the edges of each arm,
+// particles are sparse and dim, the arm dissolving into the dark before it reaches the canvas
+// edge. The structure never completes or unravels — it simply turns, endlessly, the same shape,
+// the same speed. Steadiness as rotation. Constancy as form.
 //
 // MOUSE BEHAVIOR:
-// Mouse proximity to center affects the fade threshold — mouse near center pushes the
-// dissolution point outward, so particles vanish earlier, making the center feel more
-// void-like. Mouse far from center lets particles travel almost all the way in before fading.
+// Mouse X controls the tightness of the spiral arms — far left winds them tighter toward the center,
+// far right lets them stretch and open outward. The rotation speed remains unchanged.
 //
 // RULES:
 // — Color: rgba(255, 255, 255, x) on #0a0a0a only
@@ -32,10 +27,9 @@ import { useEffect, useRef } from 'react'
 // — No text, UI, or decoration inside canvas
 // — Smooth, never jumpy — requestAnimationFrame only
 // — Cleanup: return () => cancelAnimationFrame(raf)
-// — *Sthiratā-specific: the motion must never feel chaotic or turbulent. Every particle
-//   moves with the same quiet certainty. If the field feels restless or uneven, the
-//   steadiness is lost. Steadiness is not the absence of motion — it is motion that
-//   never doubts itself.*
+// — *Sthiratā-specific: the spiral must feel ancient and indifferent — it was rotating before
+//   you arrived and will continue after. If the motion feels performative or reactive, the
+//   steadiness is lost. The galaxy does not know it is being watched.*
 
 function mulberry32(a) {
     return function() {
@@ -58,134 +52,135 @@ export default function Sthirata() {
         const cx = W / 2
         const cy = H / 2
 
-        const mouse = { x: cx, y: cy }
-        let targetMouse = { x: cx, y: cy }
+        let mouseX = W / 2
+        let targetMouseX = W / 2
         let raf
 
         const handleMouseMove = (e) => {
             const rect = canvas.getBoundingClientRect()
-            targetMouse.x = e.clientX - rect.left
-            targetMouse.y = e.clientY - rect.top
+            targetMouseX = e.clientX - rect.left
         }
 
         canvas.addEventListener('mousemove', handleMouseMove)
 
         const rng = mulberry32(0x5781ca)
 
-        // Configuration
-        const particleCount = 180
-        
-        // Helper to spawn a particle on the perimeter edges
-        const spawnParticle = (p, initialScatter = false) => {
-            // Determine which edge: 0=top, 1=right, 2=bottom, 3=left
-            const edge = Math.floor(rng() * 4)
-            let startX = 0
-            let startY = 0
+        // Initialize particles in 3 spiral arms (galaxy layout)
+        const armCount = 3
+        const particlesPerArm = 85
+        const totalParticles = armCount * particlesPerArm
 
-            if (edge === 0) { // Top
-                startX = rng() * W
-                startY = 0
-            } else if (edge === 1) { // Right
-                startX = W
-                startY = rng() * H
-            } else if (edge === 2) { // Bottom
-                startX = rng() * W
-                startY = H
-            } else { // Left
-                startX = 0
-                startY = rng() * H
+        // Precalculate seeded particle coordinates in arm-relative space
+        // We configure radius and normal deviation offsets
+        const particles = Array.from({ length: totalParticles }, (_, idx) => {
+            const armIndex = idx % armCount
+            const particleIndex = Math.floor(idx / armCount)
+            
+            // Normalized radius factor [0, 1] — how far along the arm the particle is located
+            const t = particleIndex / particlesPerArm
+            
+            // Logarithmic/linear spiral progression radius (max radius 210px to fit canvas comfortably)
+            const maxRadius = 210
+            const baseDist = t * maxRadius
+
+            // Angle offset for this arm (0, 120, or 240 degrees)
+            const armAngleOffset = (armIndex / armCount) * Math.PI * 2
+
+            // Normal distribution/dispersion of dots around the spiral spine
+            // Denser/narrower near the core (t=0), thinning out and spreading near tips (t=1)
+            const dispersion = (0.02 + t * 0.12) * Math.PI
+            const randomAngleJitter = (rng() * 2 - 1) * dispersion
+            const randomRadiusJitter = (rng() * 12 - 6) * (0.4 + t * 0.6)
+
+            // Opacity: brighter at core (t -> 0), dissolving near the outer edges (t -> 1)
+            const baseOpacity = (0.24 + rng() * 0.26) * Math.max(0, 1.0 - t * 0.95)
+
+            return {
+                t,                 // radius factor
+                baseDist,          // ideal distance from center
+                radiusJitter: randomRadiusJitter,
+                armAngleOffset,
+                angleJitter: randomAngleJitter,
+                baseOpacity,
+                size: 0.6 + rng() * 0.7
             }
-
-            // Calculate direct vector angle to center
-            const dx = cx - startX
-            const dy = cy - startY
-            const distance = Math.hypot(dx, dy)
-
-            // Curved path offset: each particle gets a slight spiral orbit factor
-            // that curves its trajectory gently inward
-            const curveFactor = (rng() * 0.28 - 0.14) // positive or negative spin
-
-            p.x = startX
-            p.y = startY
-            p.speed = 0.45 + rng() * 0.4 // slow, steady speed
-            p.curveFactor = curveFactor
-            p.size = 0.6 + rng() * 0.8
-            p.baseOpacity = 0.12 + rng() * 0.14
-
-            if (initialScatter) {
-                // For initial setup, randomly place particles along their trajectory lines
-                const travelProgress = rng()
-                const theta = Math.atan2(dy, dx)
-                // Add curve offset to initial position
-                const currentRadius = distance * (1 - travelProgress)
-                p.x = cx - Math.cos(theta + curveFactor * travelProgress) * currentRadius
-                p.y = cy - Math.sin(theta + curveFactor * travelProgress) * currentRadius
-            }
-        }
-
-        // Initialize particles
-        const particles = Array.from({ length: particleCount }, () => {
-            const p = {}
-            spawnParticle(p, true)
-            return p
         })
 
+        // Core glow dot parameters
+        const coreDotCount = 35
+        const coreDots = Array.from({ length: coreDotCount }, () => {
+            // Highly concentrated near center (radius 0 - 20px)
+            const r = rng() * 22
+            const theta = rng() * Math.PI * 2
+            return {
+                r,
+                theta,
+                opacity: 0.15 + rng() * 0.25,
+                size: 0.5 + rng() * 0.8
+            }
+        })
+
+        // Motion variables
+        let time = 0
         const draw = () => {
             // Background
             ctx.fillStyle = '#0a0a0a'
             ctx.fillRect(0, 0, W, H)
 
-            // Smoothly interpolate mouse coordinate
-            mouse.x += (targetMouse.x - mouse.x) * 0.05
-            mouse.y += (targetMouse.y - mouse.y) * 0.05
+            time += 0.015
 
-            // Calculate distance of mouse from the canvas center
-            const mouseDistFromCenter = Math.hypot(mouse.x - cx, mouse.y - cy)
-            
-            // Proximity threshold: mouse near center pushes threshold out (up to 75px void)
-            // Mouse far away lets particles travel closer (down to 18px void)
-            const maxVoidRadius = 75
-            const minVoidRadius = 18
-            
-            // Map mouse distance: close to center (< 200px) translates to larger void
-            const hoverInfluence = Math.max(0, 1 - mouseDistFromCenter / 200)
-            const voidThreshold = minVoidRadius + (maxVoidRadius - minVoidRadius) * hoverInfluence
+            // Interpolate Mouse X
+            mouseX += (targetMouseX - mouseX) * 0.05
 
+            // Tightness multiplier of spiral arms controlled by Mouse X:
+            // far left -> 5.5 radians (extremely tight wind)
+            // far right -> 1.5 radians (wide open, straight lines)
+            const tightness = 5.5 - (mouseX / W) * 4.0
+
+            // Rotation speed: 1 full rotation every 16 seconds
+            // Rotation speed: 1 full rotation every 25 seconds (25 * 60fps = 1500 frames)
+            // 2 * Math.PI / 1500 = ~0.0042 rad/frame. Since time advances by 0.015:
+            // 0.015 * 0.28 = ~0.0042 rad per frame.
+            const globalRotation = time * 0.28
+
+            // 1. Draw core glowing particles (fully locked and steady)
+            coreDots.forEach((dot) => {
+                const angle = dot.theta + globalRotation
+                const x = cx + Math.cos(angle) * dot.r
+                const y = cy + Math.sin(angle) * dot.r
+
+                ctx.beginPath()
+                ctx.arc(x, y, dot.size, 0, Math.PI * 2)
+                ctx.fillStyle = `rgba(255, 255, 255, ${dot.opacity})`
+                ctx.fill()
+            })
+
+            // 2. Draw spiral arm particles
             particles.forEach((p) => {
-                // Vector coordinates to center
-                const dx = cx - p.x
-                const dy = cy - p.y
-                const currentDist = Math.hypot(dx, dy)
+                const dist = p.baseDist + p.radiusJitter
 
-                // When reaching the center void threshold, respawn at the perimeter
-                if (currentDist <= voidThreshold) {
-                    spawnParticle(p, false)
-                    return
+                // The logarithmic spiral formula: angleOffset = tightness * radial_distance
+                const spiralAngle = p.t * tightness
+
+                // Compute dynamic tip detachment/wandering:
+                // Outer particles (p.t > 0.4) start detaching slowly from rigid rotation
+                let driftAngle = 0
+                if (p.t > 0.4) {
+                    const driftFactor = (p.t - 0.4) / 0.6 // 0 at t=0.4, 1.0 at t=1.0
+                    // Fraying/detaching oscillations using slow seeded frequencies
+                    driftAngle = Math.sin(time * 0.6 + p.baseDist) * 0.18 * driftFactor
                 }
 
-                // Smooth inward trajectory physics with slightly curved pathing
-                const angleToCenter = Math.atan2(dy, dx)
-                // Curve grows stronger closer to the center, simulating gravitational orbit deflection
-                const spiralAngle = angleToCenter + p.curveFactor * (1 - currentDist / Math.max(W, H))
+                // Compute final coordinate rotated as one global body, adding independent outer drift
+                const finalAngle = globalRotation + p.armAngleOffset + spiralAngle + p.angleJitter + driftAngle
+                const x = cx + Math.cos(finalAngle) * dist
+                const y = cy + Math.sin(finalAngle) * dist
 
-                p.x += Math.cos(spiralAngle) * p.speed
-                p.y += Math.sin(spiralAngle) * p.speed
-
-                // Calculate soft fading near the threshold
-                let opacityFactor = 1.0
-                const fadeMargin = 40 // distance interval where particle dissolves
-                if (currentDist < voidThreshold + fadeMargin) {
-                    opacityFactor = Math.max(0, (currentDist - voidThreshold) / fadeMargin)
-                }
-
-                // Draw particle
-                const finalOpacity = p.baseOpacity * opacityFactor
-                if (finalOpacity > 0.01) {
-                    ctx.beginPath()
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-                    ctx.fillStyle = `rgba(255, 255, 255, ${finalOpacity})`
-                    ctx.fill()
-                }
+                // Dissolve/fade out edge boundary particles completely to dark canvas background
+                ctx.beginPath()
+                ctx.arc(x, y, p.size, 0, Math.PI * 2)
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.baseOpacity})`
+                ctx.fill()
             })
 
             raf = requestAnimationFrame(draw)
