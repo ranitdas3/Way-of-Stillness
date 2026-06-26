@@ -3,6 +3,7 @@ import Spanda from './chapters/01-Spanda/index.jsx'
 import Delta from './chapters/02-Delta/index.jsx'
 import Bishad from './chapters/03-Bishad/index.jsx'
 import Adda from './chapters/04-Adda/index.jsx'
+import Moonsoon from './chapters/05-Moonsoon/index.jsx'
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -10,7 +11,7 @@ export default function App() {
   const isAnimating = useRef(false)
   const touchStartY = useRef(0)
 
-  const totalSections = 4
+  const totalSections = 5
 
   useEffect(() => {
     if (activeIndex !== visibleIndex) {
@@ -345,6 +346,29 @@ export default function App() {
             Holding briefly, only to remember the distance.<br />
             We meet not to stay, but to drift —<br />
             every connection is a temporary home.
+          </p>
+        </div>
+      </section>
+
+      {/* Section 05 - Moonsoon */}
+      <section
+        className={`slow-tide-section ${visibleIndex === 4 ? 'is-visible' : ''}`}
+        style={{
+          transform: activeIndex >= 4 ? 'translateY(0)' : 'translateY(100vh)',
+          zIndex: 5
+        }}
+      >
+        <Moonsoon />
+        <div className="reveal-content">
+          <p className="chapter-number">05</p>
+          <h2 className="chapter-heading">
+            Moonsoon
+          </h2>
+          <p className="chapter-paragraph">
+            A steady descent, pooling in the quiet depths.<br />
+            Weight grows heavy, holding the collective sky.<br />
+            Until the line breaks, letting go of all it carried —<br />
+            to begin again from the clean, empty air.
           </p>
         </div>
       </section>
